@@ -1,0 +1,31 @@
+# ========================
+# Laravel (Resturant/)
+# ========================
+Resturant/vendor/
+Resturant/.env
+Resturant/.phpunit.result.cache
+Resturant/storage/logs/*.log
+Resturant/storage/framework/cache/
+Resturant/storage/framework/sessions/
+Resturant/storage/framework/views/
+Resturant/bootstrap/cache/*.php
+Resturant/public/storage
+
+# ========================
+# React / Node (resturant-design/)
+# ========================
+resturant-design/node_modules/
+resturant-design/dist/
+resturant-design/.env
+resturant-design/lint_output.txt
+
+# ========================
+# General
+# ========================
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+*.suo
+*.user

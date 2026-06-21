@@ -1,0 +1,334 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import "tailwindcss";
+
+/* ==========================================================================
+   CSS Custom Properties — Light Mode
+   ========================================================================== */
+:root {
+  --primary:       #AD343E;
+  --primary-hover: #922730;
+  --secondary:     #2C2F34;
+  --bg-base:       #ffffff;
+  --bg-surface:    #F9F9F7;
+  --text-primary:  #2C2F34;
+  --text-muted:    #6b7280;
+  --border:        #e5e7eb;
+}
+
+/* ==========================================================================
+   CSS Custom Properties — Dark Mode (warm tones to match restaurant feel)
+   ========================================================================== */
+html.dark {
+  --primary:       #C94B56;       /* slightly brighter red for dark bg */
+  --primary-hover: #AD343E;
+  --secondary:     #f4ede9;       /* warm white */
+  --bg-base:       #16110f;       /* very dark warm brown-black */
+  --bg-surface:    #1f1714;       /* dark warm surface */
+  --text-primary:  #f4ede9;       /* warm white */
+  --text-muted:    #b89d95;       /* warm muted */
+  --border:        #3a2820;       /* warm dark border */
+}
+
+/* ==========================================================================
+   Base Resets
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'DM Sans', sans-serif;
+  background-color: #ffffff;
+  color: #2C2F34;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 { margin: 0; padding: 0; }
+p  { margin: 0; }
+img { display: block; max-width: 100%; }
+a  { text-decoration: none; }
+
+/* ==========================================================================
+   DARK MODE — Global Body
+   ========================================================================== */
+html.dark body {
+  background-color: #16110f !important;
+  color: #f4ede9 !important;
+}
+
+/* ==========================================================================
+   DARK MODE — Backgrounds
+   ========================================================================== */
+
+/* Pure white elements → dark warm surface */
+html.dark .bg-white,
+html.dark .bg-white\/80,
+html.dark .bg-white\/90 {
+  background-color: #241a17 !important;
+}
+
+/* Off-white / cream surfaces → slightly darker surface */
+html.dark .bg-\[\#f9f9f7\],
+html.dark .bg-\[\#F9F9F7\],
+html.dark .bg-\[\#fbfaf7\],
+html.dark .bg-\[\#FBFAF7\],
+html.dark .bg-gray-50 {
+  background-color: #1c1310 !important;
+}
+
+html.dark .bg-gray-100 {
+  background-color: #2b1f1b !important;
+}
+
+html.dark .bg-gray-200 {
+  background-color: #3a2820 !important;
+}
+
+html.dark .bg-\[\#f9f9f7\]\/40,
+html.dark .bg-\[\#F9F9F7\]\/40 {
+  background-color: rgba(28, 19, 16, 0.4) !important;
+}
+
+html.dark .bg-\[\#f9f9f7\]\/60,
+html.dark .bg-\[\#F9F9F7\]\/60 {
+  background-color: rgba(28, 19, 16, 0.6) !important;
+}
+
+/* ==========================================================================
+   DARK MODE — Text Colors
+   ========================================================================== */
+
+/* Primary headings & strong text → warm white */
+html.dark .text-\[\#2C2F34\],
+html.dark .text-\[\#2c2f34\],
+html.dark .text-gray-900,
+html.dark .text-gray-800 {
+  color: #f4ede9 !important;
+}
+
+/* Sub-headings → slightly dimmer warm */
+html.dark .text-gray-700 {
+  color: #e8d8d2 !important;
+}
+
+/* Labels & medium text → warm muted */
+html.dark .text-gray-600 {
+  color: #c9a99a !important;
+}
+
+/* Secondary text & descriptions */
+html.dark .text-gray-500 {
+  color: #9e7d73 !important;
+}
+
+/* Faint helper text */
+html.dark .text-gray-400 {
+  color: #6e5049 !important;
+}
+
+/* Custom hex overrides */
+html.dark .text-\[\#41454C\],
+html.dark .text-\[\#41454c\] {
+  color: #c9a99a !important;
+}
+
+html.dark .text-\[\#6B6F75\],
+html.dark .text-\[\#6b6f75\] {
+  color: #9e7d73 !important;
+}
+
+html.dark .text-\[\#A19C94\],
+html.dark .text-\[\#a19c94\] {
+  color: #9e7d73 !important;
+}
+
+/* ==========================================================================
+   DARK MODE — Borders
+   ========================================================================== */
+html.dark .border-gray-50,
+html.dark .border-gray-100,
+html.dark .border-gray-150 {
+  border-color: #3a2820 !important;
+}
+
+html.dark .border-gray-200 {
+  border-color: #4a3028 !important;
+}
+
+html.dark .border-gray-300 {
+  border-color: #5e3d33 !important;
+}
+
+/* ==========================================================================
+   DARK MODE — Cards & Rounded Panels
+   ========================================================================== */
+
+/* Notification panel */
+html.dark .notification-panel {
+  background-color: #241a17 !important;
+  border-color: #3a2820 !important;
+}
+
+/* ==========================================================================
+   DARK MODE — Tables
+   ========================================================================== */
+html.dark table thead tr {
+  background-color: #1c1310 !important;
+  border-bottom: 1.5px solid #3a2820 !important;
+}
+
+html.dark table tbody tr:hover {
+  background-color: #2b1f1b !important;
+}
+
+/* ==========================================================================
+   DARK MODE — Form Elements
+   ========================================================================== */
+html.dark input:not([type="checkbox"]):not([type="radio"]),
+html.dark textarea,
+html.dark select {
+  background-color: #1f1714 !important;
+  border-color: #4a3028 !important;
+  color: #f4ede9 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #6e5049 !important;
+}
+
+html.dark select option {
+  background-color: #241a17;
+  color: #f4ede9;
+}
+
+/* ==========================================================================
+   DARK MODE — Hover & Interactive States
+   ========================================================================== */
+html.dark .hover\:bg-gray-50:hover {
+  background-color: #2b1f1b !important;
+}
+
+/* ==========================================================================
+   DARK MODE — Navigation
+   ========================================================================== */
+html.dark nav,
+html.dark header {
+  background-color: rgba(22, 17, 15, 0.95) !important;
+  border-color: #3a2820 !important;
+  backdrop-filter: blur(12px);
+}
+
+/* ==========================================================================
+   DARK MODE — Footer
+   ========================================================================== */
+html.dark footer {
+  background-color: #100d0b !important;
+  border-top: 1px solid #3a2820 !important;
+}
+
+/* ==========================================================================
+   DARK MODE — Menu Item Detail Addon Cards
+   ========================================================================== */
+html.dark .detail-addon-card,
+html.dark .qty-btn,
+html.dark .detail-addon-check {
+  background-color: #241a17 !important;
+  border-color: #4a3028 !important;
+  color: #f4ede9 !important;
+}
+
+html.dark .detail-addon-card:hover {
+  background-color: rgba(173, 52, 62, 0.08) !important;
+  border-color: #AD343E !important;
+}
+
+html.dark .detail-addon-card.selected {
+  background-color: rgba(173, 52, 62, 0.15) !important;
+  border-color: #AD343E !important;
+}
+
+html.dark .qty-btn:hover {
+  border-color: #AD343E !important;
+  color: #AD343E !important;
+}
+
+/* ==========================================================================
+   DARK MODE — Scrollbar (warm tones)
+   ========================================================================== */
+html.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #1c1310;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #4a3028;
+  border-radius: 4px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #AD343E;
+}
+
+/* ==========================================================================
+   DARK MODE — PageHeader Component (used on Contact, About, etc.)
+   ========================================================================== */
+html.dark .page-header-bg,
+html.dark [class*="bg-\[#F9F9F7\]"].py-20,
+html.dark [class*="bg-\[#f9f9f7\]"].py-20 {
+  background-color: #1c1310 !important;
+}
+
+/* ==========================================================================
+   DARK MODE — Green / Amber / Blue status badges (keep readable)
+   ========================================================================== */
+html.dark .bg-green-50 {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+}
+
+html.dark .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+}
+
+html.dark .bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+html.dark .bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+/* ==========================================================================
+   DARK MODE — Hero Section Exception
+   The hero has a fixed light background image — keep text dark & readable.
+   ========================================================================== */
+html.dark .hero-text {
+  color: #2C2F34 !important;
+  text-shadow: 0 2px 14px rgba(255, 255, 255, 0.95),
+               0 0 30px rgba(255, 255, 255, 0.6) !important;
+}
+
+html.dark .hero-btn {
+  border-color: #2C2F34 !important;
+  color: #2C2F34 !important;
+}
+
+html.dark .hero-btn:hover {
+  background-color: #2C2F34 !important;
+  color: #ffffff !important;
+}
