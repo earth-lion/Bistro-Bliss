@@ -8,6 +8,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { api } from "../services/api";
 import PageHeader from "../components/PageHeader";
 import { Search, Loader, AlertCircle } from "lucide-react";
+import { getFoodImageUrl, resolveAssetImage } from "../utils/imageUtils";
 
 // ==========================================================================
 // [2] MAIN COMPONENT: MENU
@@ -54,7 +55,7 @@ const Menu = () => {
       }
     };
     loadData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCategorySelect = (catName) => {
@@ -86,9 +87,10 @@ const Menu = () => {
   // Add to cart — called only from the button (stopPropagation prevents card click)
   const handleAddToCart = (e, item) => {
     e.stopPropagation();
-    const resolvedImage = parseInt(item.id, 10) >= 1 && parseInt(item.id, 10) <= 27
-      ? `/src/assets/foods/${item.id}.jpg`
-      : item.image_url || item.image;
+    const resolvedImage =
+      parseInt(item.id, 10) >= 1 && parseInt(item.id, 10) <= 27
+        ? getFoodImageUrl(item.id)
+        : item.image_url || resolveAssetImage(item.image);
     addToCart({
       id: item.id,
       name: item.name,
@@ -96,7 +98,10 @@ const Menu = () => {
       image: resolvedImage,
     });
     setAddedItems((prev) => ({ ...prev, [item.id]: true }));
-    setTimeout(() => setAddedItems((prev) => ({ ...prev, [item.id]: false })), 1500);
+    setTimeout(
+      () => setAddedItems((prev) => ({ ...prev, [item.id]: false })),
+      1500,
+    );
     setTimeout(() => setIsCartOpen(true), 400);
   };
 
@@ -127,14 +132,11 @@ const Menu = () => {
   });
 
   return (
-    <div 
+    <div
       className="font-['DM_Sans',sans-serif] bg-white text-[#41454C] min-h-screen text-start"
       dir={isArabic ? "rtl" : "ltr"}
     >
-      <PageHeader
-        title={t("menu.title")}
-        description={t("menu.desc")}
-      />
+      <PageHeader title={t("menu.title")} description={t("menu.desc")} />
 
       {/* CATEGORIES & SEARCH */}
       <section className="py-20 px-6 max-w-7xl mx-auto space-y-12">
@@ -166,7 +168,9 @@ const Menu = () => {
           </div>
 
           <div className="relative max-w-sm w-full">
-            <Search className={`absolute ${isArabic ? "right-4" : "left-4"} top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4`} />
+            <Search
+              className={`absolute ${isArabic ? "right-4" : "left-4"} top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4`}
+            />
             <input
               type="text"
               value={searchQuery}
@@ -199,12 +203,15 @@ const Menu = () => {
                   <img
                     src={
                       parseInt(item.id, 10) >= 1 && parseInt(item.id, 10) <= 27
-                        ? `/src/assets/foods/${item.id}.jpg`
-                        : item.image_url || (item.image?.startsWith("http") ? item.image : `/src/assets/${item.image}`)
+                        ? getFoodImageUrl(item.id)
+                        : item.image_url || resolveAssetImage(item.image)
                     }
                     alt={translateMenuItemName(item)}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                    onError={(e) => { e.target.onerror = null; e.target.src = "/placeholder.jpg"; }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = getFoodImageUrl(null);
+                    }}
                   />
                   {/* Hover overlay hint */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition duration-300 rounded-2xl flex items-center justify-center">
@@ -213,9 +220,13 @@ const Menu = () => {
                     </span>
                   </div>
                 </div>
- 
-                <h3 className="font-bold text-lg">{translateMenuItemName(item)}</h3>
-                <p className="text-gray-500 text-xs mb-4 line-clamp-2">{translateMenuItemDesc(item)}</p>
+
+                <h3 className="font-bold text-lg">
+                  {translateMenuItemName(item)}
+                </h3>
+                <p className="text-gray-500 text-xs mb-4 line-clamp-2">
+                  {translateMenuItemDesc(item)}
+                </p>
 
                 {/* Add to Cart button — stopPropagation prevents navigating to detail */}
                 <button
@@ -263,7 +274,9 @@ const Menu = () => {
                 key={i}
                 className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex items-center justify-center hover:shadow-lg transition-shadow duration-300"
               >
-                <span className={`font-black text-lg ${app.color}`}>{app.name}</span>
+                <span className={`font-black text-lg ${app.color}`}>
+                  {app.name}
+                </span>
               </div>
             ))}
           </div>

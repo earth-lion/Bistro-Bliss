@@ -3,7 +3,7 @@
 // ==========================================================================
 import axios from "axios";
 
-const API_BASE_URL = "http://127.0.0.1:8000/api";
+const API_BASE_URL = "/api";
 
 // Create a shared Axios instance
 const axiosInstance = axios.create({
@@ -33,7 +33,7 @@ axiosInstance.interceptors.response.use(
       error.response?.data?.error ||
       "Something went wrong";
     return Promise.reject(new Error(message));
-  }
+  },
 );
 
 export const api = {
@@ -162,10 +162,9 @@ export const api = {
   },
 
   async adminUpdateBookingStatus(id, status) {
-    const { data } = await axiosInstance.patch(
-      `/admin/bookings/${id}/status`,
-      { status }
-    );
+    const { data } = await axiosInstance.patch(`/admin/bookings/${id}/status`, {
+      status,
+    });
     return data;
   },
 
@@ -178,10 +177,9 @@ export const api = {
   },
 
   async adminUpdateOrderStatus(id, status) {
-    const { data } = await axiosInstance.patch(
-      `/admin/orders/${id}/status`,
-      { status }
-    );
+    const { data } = await axiosInstance.patch(`/admin/orders/${id}/status`, {
+      status,
+    });
     return data;
   },
 
@@ -238,7 +236,9 @@ export const api = {
   },
 
   async adminReplyContact(id, reply) {
-    const { data } = await axiosInstance.post(`/admin/contacts/${id}/reply`, { reply });
+    const { data } = await axiosInstance.post(`/admin/contacts/${id}/reply`, {
+      reply,
+    });
     return data;
   },
 };

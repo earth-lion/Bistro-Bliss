@@ -3,7 +3,16 @@ import { useApp } from "../contexts/AppContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
-import { X, Plus, Minus, Trash2, ShoppingBag, CreditCard, Truck } from "lucide-react";
+import {
+  X,
+  Plus,
+  Minus,
+  Trash2,
+  ShoppingBag,
+  CreditCard,
+  Truck,
+} from "lucide-react";
+import { getFoodImageUrl, resolveAssetImage } from "../utils/imageUtils";
 
 const CartDrawer = () => {
   const {
@@ -62,7 +71,8 @@ const CartDrawer = () => {
     if (!item) return "";
     const name = typeof item === "object" ? item.name : item;
     // Support dynamically added items with Arabic name stored in DB
-    if (isArabic && typeof item === "object" && item.name_ar) return item.name_ar;
+    if (isArabic && typeof item === "object" && item.name_ar)
+      return item.name_ar;
     const trans = t(`menuItems.${name}.name`);
     return trans.startsWith("menuItems.") ? name : trans;
   };
@@ -112,7 +122,7 @@ const CartDrawer = () => {
       clearCart();
       addNotification(
         t("cart.placedSuccess") + " " + t("cart.successDesc"),
-        "success"
+        "success",
       );
       setTimeout(() => {
         setIsCartOpen(false);
@@ -131,18 +141,15 @@ const CartDrawer = () => {
 
   return (
     <div className="fixed inset-0 z-[1050] flex justify-end font-['DM_Sans',sans-serif]">
-      
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300"
         onClick={() => setIsCartOpen(false)}
       />
 
-      
-      <div 
+      <div
         className="relative w-full max-w-md h-full bg-white shadow-2xl flex flex-col z-10 animate-slide-in overflow-hidden text-start"
         dir={isArabic ? "rtl" : "ltr"}
       >
-        
         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
           <div className="flex items-center gap-2">
             <ShoppingBag className="text-[#AD343E] w-6 h-6" />
@@ -158,7 +165,6 @@ const CartDrawer = () => {
           </button>
         </div>
 
-        
         {success ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-white animate-fade-in">
             <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 animate-bounce">
@@ -182,11 +188,12 @@ const CartDrawer = () => {
             <p className="text-gray-500 mb-6 text-sm">
               {t("cart.successDesc")}
             </p>
-            <span className="text-xs text-gray-400">{t("cart.redirecting")}</span>
+            <span className="text-xs text-gray-400">
+              {t("cart.redirecting")}
+            </span>
           </div>
         ) : (
           <>
-            
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {error && (
                 <div className="p-3 bg-red-50 text-red-600 rounded-lg text-xs font-semibold">
@@ -196,10 +203,16 @@ const CartDrawer = () => {
 
               {cartItems.length === 0 ? (
                 <div className="h-64 flex flex-col items-center justify-center text-center space-y-4">
-                  <ShoppingBag size={48} className="text-gray-300 stroke-[1.5]" />
+                  <ShoppingBag
+                    size={48}
+                    className="text-gray-300 stroke-[1.5]"
+                  />
                   <p className="text-gray-500 font-medium">{t("cart.empty")}</p>
                   <button
-                    onClick={() => { setIsCartOpen(false); navigate("/menu"); }}
+                    onClick={() => {
+                      setIsCartOpen(false);
+                      navigate("/menu");
+                    }}
                     className="px-5 py-2.5 bg-[#AD343E] hover:bg-[#922730] text-white rounded-full font-bold text-sm transition shadow-sm"
                   >
                     {t("cart.browseMenu")}
@@ -207,7 +220,6 @@ const CartDrawer = () => {
                 </div>
               ) : (
                 <>
-                  
                   <div className="space-y-4">
                     {cartItems.map((item) => (
                       <div
@@ -216,15 +228,16 @@ const CartDrawer = () => {
                       >
                         <img
                           src={
-                            parseInt(item.id, 10) >= 1 && parseInt(item.id, 10) <= 27
-                              ? `/src/assets/foods/${item.id}.jpg`
-                              : item.image_url || (item.image?.startsWith('http') ? item.image : `/src/assets/${item.image}`)
+                            parseInt(item.id, 10) >= 1 &&
+                            parseInt(item.id, 10) <= 27
+                              ? getFoodImageUrl(item.id)
+                              : item.image_url || resolveAssetImage(item.image)
                           }
                           alt={translateMenuItemName(item)}
                           className="w-16 h-16 object-cover rounded-lg bg-gray-100"
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = "/placeholder.jpg";
+                            e.target.src = getFoodImageUrl(null);
                           }}
                         />
                         <div className="flex-1 flex flex-col justify-between">
@@ -270,7 +283,6 @@ const CartDrawer = () => {
                     ))}
                   </div>
 
-                  
                   <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 space-y-2 text-sm text-gray-600">
                     <div className="flex justify-between">
                       <span>{t("cart.subtotal")}</span>
@@ -292,13 +304,10 @@ const CartDrawer = () => {
                     </div>
                   </div>
 
-                  
                   <div className="border-t border-gray-100 pt-6">
                     {!isAuthenticated ? (
                       <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 text-amber-800 text-xs leading-relaxed space-y-3">
-                        <p>
-                          {t("cart.loginRequired")}
-                        </p>
+                        <p>{t("cart.loginRequired")}</p>
                         <button
                           onClick={() => {
                             setIsCartOpen(false);
@@ -315,7 +324,6 @@ const CartDrawer = () => {
                           {t("cart.checkoutDetails")}
                         </h3>
 
-                        
                         <div>
                           <label className="block text-xs font-semibold text-gray-600 uppercase mb-1">
                             {t("cart.contactPhone")}
@@ -330,7 +338,6 @@ const CartDrawer = () => {
                           />
                         </div>
 
-                        
                         <div>
                           <label className="block text-xs font-semibold text-gray-600 uppercase mb-1">
                             {t("cart.deliveryAddress")}
@@ -345,7 +352,6 @@ const CartDrawer = () => {
                           />
                         </div>
 
-                        
                         <div>
                           <label className="block text-xs font-semibold text-gray-600 uppercase mb-1">
                             {t("cart.orderNotes")}
@@ -359,7 +365,6 @@ const CartDrawer = () => {
                           />
                         </div>
 
-                        
                         <div>
                           <label className="block text-xs font-semibold text-gray-600 uppercase mb-2">
                             {t("cart.paymentMethod")}

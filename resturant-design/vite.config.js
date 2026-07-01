@@ -54,7 +54,7 @@ export default defineConfig({
         // Cache menu data and static assets
         runtimeCaching: [
           {
-            urlPattern: /^https?:\/\/127\.0\.0\.1:8000\/api\/menu/,
+            urlPattern: /^https?:\/\/127\.0\.0\.1:8001\/api\/menu/,
             handler: "NetworkFirst",
             options: {
               cacheName: "api-menu-cache",
@@ -63,7 +63,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /^https?:\/\/127\.0\.0\.1:8000\/api\/categories/,
+            urlPattern: /^https?:\/\/127\.0\.0\.1:8001\/api\/categories/,
             handler: "NetworkFirst",
             options: {
               cacheName: "api-categories-cache",
@@ -84,9 +84,11 @@ export default defineConfig({
     }),
   ],
   server: {
+    host: "127.0.0.1",
+    port: 5174,
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:8000",
+        target: "http://127.0.0.1:8001",
         changeOrigin: true,
         secure: false,
       },

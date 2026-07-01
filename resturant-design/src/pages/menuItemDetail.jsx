@@ -6,7 +6,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useApp } from "../contexts/AppContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import { api } from "../services/api";
-import { ShoppingCart, ArrowLeft, Flame, Plus, Minus, Check } from "lucide-react";
+import {
+  ShoppingCart,
+  ArrowLeft,
+  Flame,
+  Plus,
+  Minus,
+  Check,
+} from "lucide-react";
+import { getFoodImageUrl, resolveAssetImage } from "../utils/imageUtils";
 
 // ==========================================================================
 // [2] ADD-ONS DATA — tailored per product category
@@ -68,17 +76,17 @@ const addonsByCategory = {
   },
   drinks: {
     en: [
-      { id: "d1", name: "Small Size", price: -1.00, icon: "🥤" },
-      { id: "d2", name: "Large Size", price: 1.00, icon: "🍹" },
-      { id: "d3", name: "Extra Ice", price: 0.00, icon: "🧊" },
+      { id: "d1", name: "Small Size", price: -1.0, icon: "🥤" },
+      { id: "d2", name: "Large Size", price: 1.0, icon: "🍹" },
+      { id: "d3", name: "Extra Ice", price: 0.0, icon: "🧊" },
       { id: "d4", name: "Vanilla Flavor", price: 0.49, icon: "🌿" },
       { id: "d5", name: "Caramel Drizzle", price: 0.59, icon: "🍯" },
       { id: "d6", name: "Oat Milk", price: 0.79, icon: "🥛" },
     ],
     ar: [
-      { id: "d1", name: "حجم صغير", price: -1.00, icon: "🥤" },
-      { id: "d2", name: "حجم كبير", price: 1.00, icon: "🍹" },
-      { id: "d3", name: "ثلج إضافي", price: 0.00, icon: "🧊" },
+      { id: "d1", name: "حجم صغير", price: -1.0, icon: "🥤" },
+      { id: "d2", name: "حجم كبير", price: 1.0, icon: "🍹" },
+      { id: "d3", name: "ثلج إضافي", price: 0.0, icon: "🧊" },
       { id: "d4", name: "نكهة فانيليا", price: 0.49, icon: "🌿" },
       { id: "d5", name: "كراميل", price: 0.59, icon: "🍯" },
       { id: "d6", name: "حليب الشوفان", price: 0.79, icon: "🥛" },
@@ -107,13 +115,13 @@ const addonsByCategory = {
       { id: "g1", name: "Side Salad", price: 1.49, icon: "🥗" },
       { id: "g2", name: "French Fries", price: 1.99, icon: "🍟" },
       { id: "g3", name: "Ketchup Sauce", price: 0.29, icon: "🍅" },
-      { id: "g4", name: "Extra Napkins", price: 0.00, icon: "🧻" },
+      { id: "g4", name: "Extra Napkins", price: 0.0, icon: "🧻" },
     ],
     ar: [
       { id: "g1", name: "سلطة جانبية", price: 1.49, icon: "🥗" },
       { id: "g2", name: "بطاطا مقلية", price: 1.99, icon: "🍟" },
       { id: "g3", name: "صوص كيتشب", price: 0.29, icon: "🍅" },
-      { id: "g4", name: "مناديل إضافية", price: 0.00, icon: "🧻" },
+      { id: "g4", name: "مناديل إضافية", price: 0.0, icon: "🧻" },
     ],
   },
 };
@@ -173,8 +181,19 @@ const getCategoryKey = (categoryName) => {
   if (name.includes("burger")) return "burgers";
   if (name.includes("pizza")) return "pizza";
   if (name.includes("pasta")) return "pasta";
-  if (name.includes("drink") || name.includes("beverage") || name.includes("juice") || name.includes("coffee")) return "drinks";
-  if (name.includes("dessert") || name.includes("sweet") || name.includes("cake")) return "desserts";
+  if (
+    name.includes("drink") ||
+    name.includes("beverage") ||
+    name.includes("juice") ||
+    name.includes("coffee")
+  )
+    return "drinks";
+  if (
+    name.includes("dessert") ||
+    name.includes("sweet") ||
+    name.includes("cake")
+  )
+    return "desserts";
   return "default";
 };
 
@@ -211,8 +230,11 @@ const MenuItemDetail = () => {
   }, [id]);
 
   const categoryKey = getCategoryKey(item?.category?.name);
-  const addons = addonsByCategory[categoryKey]?.[language] || addonsByCategory.default[language];
-  const mockDetails = mockDetailsByCategory[categoryKey] || mockDetailsByCategory.default;
+  const addons =
+    addonsByCategory[categoryKey]?.[language] ||
+    addonsByCategory.default[language];
+  const mockDetails =
+    mockDetailsByCategory[categoryKey] || mockDetailsByCategory.default;
 
   const translateCategory = (catName) => {
     const trans = t(`categories.${catName}`);
@@ -240,7 +262,7 @@ const MenuItemDetail = () => {
     setSelectedAddons((prev) =>
       prev.find((a) => a.id === addon.id)
         ? prev.filter((a) => a.id !== addon.id)
-        : [...prev, addon]
+        : [...prev, addon],
     );
   };
 
@@ -249,9 +271,10 @@ const MenuItemDetail = () => {
   const totalPrice = (basePrice + addonTotal) * quantity;
 
   const handleAddToCart = () => {
-    const resolvedImage = parseInt(item.id, 10) >= 1 && parseInt(item.id, 10) <= 27
-      ? `/src/assets/foods/${item.id}.jpg`
-      : item.image_url || item.image;
+    const resolvedImage =
+      parseInt(item.id, 10) >= 1 && parseInt(item.id, 10) <= 27
+        ? getFoodImageUrl(item.id)
+        : item.image_url || resolveAssetImage(item.image);
     addToCart({
       id: item.id,
       name: item.name,
@@ -279,16 +302,20 @@ const MenuItemDetail = () => {
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-6">
         <span className="text-5xl">🍽️</span>
         <h2 className="text-2xl font-bold text-[#2C2F34]">Item not found</h2>
-        <button onClick={() => navigate("/menu")} className="mt-4 px-6 py-3 bg-[#AD343E] text-white rounded-full font-bold">
+        <button
+          onClick={() => navigate("/menu")}
+          className="mt-4 px-6 py-3 bg-[#AD343E] text-white rounded-full font-bold"
+        >
           {t("detail.backToMenu")}
         </button>
       </div>
     );
   }
 
-  const imageUrl = parseInt(item.id, 10) >= 1 && parseInt(item.id, 10) <= 27
-    ? `/src/assets/foods/${item.id}.jpg`
-    : item.image_url || (item.image?.startsWith("http") ? item.image : `/src/assets/${item.image}`);
+  const imageUrl =
+    parseInt(item.id, 10) >= 1 && parseInt(item.id, 10) <= 27
+      ? getFoodImageUrl(item.id)
+      : item.image_url || resolveAssetImage(item.image);
 
   return (
     <div
@@ -345,21 +372,27 @@ const MenuItemDetail = () => {
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-[#AD343E] font-bold hover:underline text-sm"
         >
-          {isArabic ? <ArrowLeft className="rotate-180" size={16} /> : <ArrowLeft size={16} />}
+          {isArabic ? (
+            <ArrowLeft className="rotate-180" size={16} />
+          ) : (
+            <ArrowLeft size={16} />
+          )}
           {t("detail.backToMenu")}
         </button>
       </div>
 
       {/* MAIN DETAIL SECTION */}
       <section className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-
         {/* LEFT: Image */}
         <div className="relative rounded-[32px] overflow-hidden shadow-2xl bg-[#F9F9F7] h-[420px] lg:h-[520px]">
           <img
             src={imageUrl}
             alt={translateMenuItemName(item)}
             className="w-full h-full object-cover"
-            onError={(e) => { e.target.onerror = null; e.target.src = "/placeholder.jpg"; }}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = getFoodImageUrl(null);
+            }}
           />
           {/* Category badge */}
           {item.category?.name && (
@@ -372,9 +405,13 @@ const MenuItemDetail = () => {
         {/* RIGHT: Info */}
         <div className="space-y-6">
           <div>
-            <h1 className="font-['Playfair_Display',serif] text-4xl font-extrabold text-[#2C2F34] leading-tight">{translateMenuItemName(item)}</h1>
+            <h1 className="font-['Playfair_Display',serif] text-4xl font-extrabold text-[#2C2F34] leading-tight">
+              {translateMenuItemName(item)}
+            </h1>
             <div className="flex items-center gap-4 mt-3">
-              <span className="text-3xl font-extrabold text-[#AD343E]">${basePrice.toFixed(2)}</span>
+              <span className="text-3xl font-extrabold text-[#AD343E]">
+                ${basePrice.toFixed(2)}
+              </span>
               <span className="flex items-center gap-1 text-orange-500 font-semibold text-sm bg-orange-50 px-3 py-1 rounded-full">
                 <Flame size={14} /> {mockDetails.calories} {t("detail.kcal")}
               </span>
@@ -384,14 +421,20 @@ const MenuItemDetail = () => {
           {/* Description */}
           {item.description && (
             <div>
-              <h3 className="font-bold text-[#2C2F34] text-sm uppercase tracking-wider mb-2">{t("detail.description")}</h3>
-              <p className="text-gray-600 leading-relaxed">{translateMenuItemDesc(item)}</p>
+              <h3 className="font-bold text-[#2C2F34] text-sm uppercase tracking-wider mb-2">
+                {t("detail.description")}
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                {translateMenuItemDesc(item)}
+              </p>
             </div>
           )}
 
           {/* Ingredients */}
           <div className="bg-[#F9F9F7] rounded-2xl p-5">
-            <h3 className="font-bold text-[#2C2F34] text-sm uppercase tracking-wider mb-2">{t("detail.ingredients")}</h3>
+            <h3 className="font-bold text-[#2C2F34] text-sm uppercase tracking-wider mb-2">
+              {t("detail.ingredients")}
+            </h3>
             <p className="text-gray-600 text-sm leading-relaxed">
               {mockDetails.ingredients[language] || mockDetails.ingredients.en}
             </p>
@@ -399,11 +442,25 @@ const MenuItemDetail = () => {
 
           {/* Quantity */}
           <div className="flex items-center gap-4">
-            <span className="font-bold text-sm text-gray-500 uppercase tracking-wide">{isArabic ? "الكمية" : "Qty"}</span>
+            <span className="font-bold text-sm text-gray-500 uppercase tracking-wide">
+              {isArabic ? "الكمية" : "Qty"}
+            </span>
             <div className="flex items-center gap-3">
-              <button className="qty-btn" onClick={() => setQuantity(q => Math.max(1, q - 1))}><Minus size={14} /></button>
-              <span className="w-8 text-center font-extrabold text-lg">{quantity}</span>
-              <button className="qty-btn" onClick={() => setQuantity(q => q + 1)}><Plus size={14} /></button>
+              <button
+                className="qty-btn"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+              >
+                <Minus size={14} />
+              </button>
+              <span className="w-8 text-center font-extrabold text-lg">
+                {quantity}
+              </span>
+              <button
+                className="qty-btn"
+                onClick={() => setQuantity((q) => q + 1)}
+              >
+                <Plus size={14} />
+              </button>
             </div>
           </div>
 
@@ -417,7 +474,9 @@ const MenuItemDetail = () => {
             }`}
           >
             {added ? (
-              <span className="pop-in flex items-center gap-2"><Check size={18} /> {t("detail.addedToCart")}</span>
+              <span className="pop-in flex items-center gap-2">
+                <Check size={18} /> {t("detail.addedToCart")}
+              </span>
             ) : (
               <>
                 <ShoppingCart size={18} />
@@ -453,9 +512,17 @@ const MenuItemDetail = () => {
                     {isSelected && <Check size={11} color="#fff" />}
                   </div>
                   <span className="detail-addon-icon">{addon.icon}</span>
-                  <p className="font-bold text-xs text-[#2C2F34] leading-tight w-full truncate">{addon.name}</p>
+                  <p className="font-bold text-xs text-[#2C2F34] leading-tight w-full truncate">
+                    {addon.name}
+                  </p>
                   <p className="text-[11px] text-[#AD343E] font-semibold">
-                    {addon.price === 0 ? (isArabic ? "مجاناً" : "Free") : addon.price > 0 ? `+$${addon.price.toFixed(2)}` : `-$${Math.abs(addon.price).toFixed(2)}`}
+                    {addon.price === 0
+                      ? isArabic
+                        ? "مجاناً"
+                        : "Free"
+                      : addon.price > 0
+                        ? `+$${addon.price.toFixed(2)}`
+                        : `-$${Math.abs(addon.price).toFixed(2)}`}
                   </p>
                 </div>
               );
@@ -469,8 +536,14 @@ const MenuItemDetail = () => {
                 {isArabic ? "الإضافات المختارة:" : "Selected add-ons:"}
               </span>
               {selectedAddons.map((a) => (
-                <span key={a.id} className="bg-white border border-[#AD343E]/30 text-[#AD343E] text-xs font-bold px-3 py-1 rounded-full">
-                  {a.icon} {a.name} {a.price !== 0 ? `(${a.price > 0 ? "+" : ""}$${a.price.toFixed(2)})` : ""}
+                <span
+                  key={a.id}
+                  className="bg-white border border-[#AD343E]/30 text-[#AD343E] text-xs font-bold px-3 py-1 rounded-full"
+                >
+                  {a.icon} {a.name}{" "}
+                  {a.price !== 0
+                    ? `(${a.price > 0 ? "+" : ""}$${a.price.toFixed(2)})`
+                    : ""}
                 </span>
               ))}
               <span className="ml-auto font-extrabold text-[#AD343E]">
